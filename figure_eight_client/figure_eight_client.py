@@ -62,7 +62,7 @@ class FigureEightClient:
 
         return results
 
-    def get_jobs(self, exclude_instructions=False, pages=-1):
+    def get_jobs(self, team_id=None, exclude_instructions=True, pages=-1):
         path = "jobs.json"
         url = self.endpoint.format(path=path, api_key=self.api_key)
 
@@ -70,7 +70,10 @@ class FigureEightClient:
         i = 0
         infinite = pages == -1
         while i < pages or infinite:
-            res = requests.get(url + f"&page={i + 1}")
+            params = { 'page': i+1 }
+            if team_id:
+                params['team_id'] = team_id
+            res = requests.get(url, params = params)
             self.__check_response_status_code(res, path)
 
             contents = res.json()
